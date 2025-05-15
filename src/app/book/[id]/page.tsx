@@ -869,7 +869,7 @@ export default function BookingPage() {
 
                     {/*########################  payment     ################################### */}
                     <form method="POST" action="https://api.chapa.co/v1/hosted/pay" >
-                          <input type="hidden" name="public_key" value="CHAPUBK_TEST-6vxmis0gUxJ7Q5LrkocCZdLD87kjV6JN" />
+                          <input type="hidden" name="public_key" value="CHAPUBK_TEST-" />
                           <input type="hidden" name="tx_ref" value={randomString} />
                           <input type="hidden" name="amount" value={TotalPrice} />
                           <input type="hidden" name="currency" value="ETB" />
