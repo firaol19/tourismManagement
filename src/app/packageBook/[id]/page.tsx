@@ -209,7 +209,7 @@ export default function PackageBook() {
           <input
             type="hidden"
             name="public_key"
-            value="CHAPUBK_TEST-6vxmis0gUxJ7Q5LrkocCZdLD87kjV6JN"
+            value="CHAPUBK_TEST"
           />
           <input type="hidden" name="tx_ref" value={randomString} />
           <input type="hidden" name="amount" value={totalPrice} />
