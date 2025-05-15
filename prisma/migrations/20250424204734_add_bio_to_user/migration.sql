@@ -1,0 +1,18 @@
+-- AlterTable
+ALTER TABLE `accommodation` ADD COLUMN `providerId` VARCHAR(191) NOT NULL DEFAULT '10',
+    ADD COLUMN `refundDate` VARCHAR(191) NOT NULL DEFAULT '5';
+
+-- AlterTable
+ALTER TABLE `destination` ADD COLUMN `providerId` VARCHAR(191) NOT NULL DEFAULT '10',
+    ADD COLUMN `refundDate` VARCHAR(191) NOT NULL DEFAULT '5';
+
+-- AlterTable
+ALTER TABLE `package` ADD COLUMN `refundDate` VARCHAR(191) NOT NULL DEFAULT '5';
+
+-- AlterTable
+ALTER TABLE `tourguide` ADD COLUMN `providerId` VARCHAR(191) NOT NULL DEFAULT '10',
+    ADD COLUMN `refundDate` VARCHAR(191) NOT NULL DEFAULT '5';
+
+-- AlterTable
+ALTER TABLE `transportation` ADD COLUMN `providerId` VARCHAR(191) NOT NULL DEFAULT '10',
+    ADD COLUMN `refundDate` VARCHAR(191) NOT NULL DEFAULT '5';

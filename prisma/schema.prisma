@@ -1,0 +1,192 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int        @id @default(autoincrement())
+  email    String     @unique
+  name     String
+  phone    String?
+  role     String
+  password String?
+  image    String?
+  reviews  Review[]
+  bookings BookedService[]
+  sentMessages    Message[] @relation("messageSent")
+  receivedMessages Message[] @relation("messageReceived")
+
+  BookedPackage BookedPackage[]
+}
+
+model Destination {
+  id             Int        @id @default(autoincrement())
+  name           String
+  region         String
+  city           String
+  farFromAdiss   String
+  image          String
+  providerId String  @default("10")
+  refundDate String  @default("5")
+  category       String     // Add this line
+  reviews        Review[]
+  bookedServices BookedService[]
+  interance       Int
+  description String
+}
+
+
+model TourGuide {
+  id    Int        @id @default(autoincrement())
+  name  String
+  language String
+  price String
+  image String
+  providerId String  @default("10")
+  refundDate String  @default("5")
+  bookings BookedService[]
+
+  Cancelbook Cancelbook[]
+}
+
+model Review {
+  id        Int    @id @default(autoincrement())
+  date      DateTime @default(now())
+  review    String
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id])
+  destinationId Int?
+  destination   Destination? @relation(fields: [destinationId], references: [id])
+}
+
+model BookedService {
+  id                     Int             @id @default(autoincrement())
+  destinationId          Int?
+  destination            Destination?    @relation(fields: [destinationId], references: [id])
+  accommodationId        Int?
+  accommodation          Accommodation?  @relation(fields: [accommodationId], references: [id])
+
+  transportationId       Int?
+  transportation         Transportation? @relation("TransportationGoing", fields: [transportationId], references: [id])
+
+  returnTransportationId Int?
+  returnTransportation   Transportation? @relation("TransportationReturn", fields: [returnTransportationId], references: [id])
+
+  tourGuideId            Int?
+  tourGuide              TourGuide?       @relation(fields: [tourGuideId], references: [id])
+
+  date                   DateTime
+  time                   String 
+  reference        String    @default(uuid()) 
+  status           String    @default("pending")
+  totalPrice             Float
+  numberPerson           Int 
+  userId                 Int
+  user                   User              @relation(fields: [userId], references: [id])
+
+  coupon                 String?
+
+  Cancelbook             Cancelbook[]
+}
+
+
+model Cancelbook {
+  id                        Int        @id @default(autoincrement())
+  canceledServiceId         Int?       // for BookedService.id
+  canceledAccommodationId   Int?
+  canceledTransportationId  Int?
+  canceledTourGuideId       Int?
+  canceledPackageId         Int?
+
+  bookedService      BookedService?   @relation(fields: [canceledServiceId], references: [id])
+  accommodation      Accommodation?   @relation(fields: [canceledAccommodationId], references: [id])
+  transportation     Transportation?  @relation(fields: [canceledTransportationId], references: [id])
+  tourGuide          TourGuide?       @relation(fields: [canceledTourGuideId], references: [id])
+  bookedPackage      BookedPackage?   @relation(fields: [canceledPackageId], references: [id])
+}
+
+
+
+model BookedPackage {
+  id              Int        @id @default(autoincrement())
+  packageId   Int?
+  destination     Package? @relation(fields: [packageId], references: [id])
+  date            String 
+  time            String
+  totalPrice      Float
+  numberPerson       Int
+  userId          Int
+  user            User @relation(fields: [userId], references: [id])
+  coupon        String?
+
+  Cancelbook Cancelbook[]
+}
+
+model Transportation {
+  id             Int              @id @default(autoincrement())
+  provider       String
+  type           String
+  description    String
+  image          String
+  totalcar       String @default("7")
+  price          Float
+  noperson       Int
+  providerId     String           @default("10")
+  refundDate     String           @default("5")
+
+  bookingsAsGoing   BookedService[] @relation("TransportationGoing")
+  bookingsAsReturn  BookedService[] @relation("TransportationReturn")
+
+  Cancelbook Cancelbook[]
+}
+
+
+model Package {
+  id          Int      @id @default(autoincrement())
+  place       String
+  title       String
+  description String
+  duration    String
+  image       String
+  available   String @default("8")
+  price       String
+  include     String
+  refundDate String  @default("5")
+  bookedPackage BookedPackage[]
+}
+
+model Accommodation {
+  id          Int    @id @default(autoincrement())
+  provider    String
+  type        String
+  description String
+  image       String
+  price       Float
+  available   String @default("10")
+  city        String
+  providerId String  @default("10")
+  refundDate String  @default("5")
+  bookings    BookedService[]
+
+  Cancelbook Cancelbook[]
+}
+
+model Message {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  msenderId    Int
+  msender      User     @relation("messageSent", fields: [msenderId], references: [id], onDelete: Cascade)
+  mreceiverId  Int
+  mreceiver    User     @relation("messageReceived", fields: [mreceiverId], references: [id], onDelete: Cascade)
+  message      String
+}
